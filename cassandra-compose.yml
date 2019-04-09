@@ -1,0 +1,43 @@
+version: '2'
+
+networks:
+  default:
+    external:
+      name: kafka_python_api_demo-net
+
+services:
+  cassandra1:
+    image: 'cassandra'
+    
+    networks:
+      default:
+        ipv4_address: 172.40.0.9
+
+    volumes:
+      - cassandra:/var/lib/docker/volumes/cassandra
+          
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=172.40.0.9
+  
+  # cassandra2:
+  #   image: 'cassandra'
+    
+  #   networks:
+  #     default:
+  #       ipv4_address: 172.40.0.10
+    
+  #   volumes:
+  #     - 'cassandra2_data:/var/lib/docker/volumes/cassandra'
+    
+  #   environment:
+  #     - CASSANDRA_BROADCAST_ADDRESS=172.40.0.10
+  #     - CASSANDRA_SEEDS=172.40.0.9
+
+
+
+volumes:
+  cassandra:
+    external: true
+  
+
+
