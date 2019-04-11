@@ -4,7 +4,7 @@ services:
   zookeeper:
     image: 'bitnami/zookeeper:latest'
     networks:
-      demo-net:
+      default:
         ipv4_address: 172.40.0.5
     ports:
       - '2181:2181'
@@ -14,14 +14,14 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
   
   kafka:
-    image: 'bitnami/kafka:2'
+    image: 'root-kafka-bitnami:latest'
     networks:
-      demo-net:
+      default:
         ipv4_address: 172.40.0.6
     ports:
       - '9092:9092'
     volumes:
-      - 'kafka_data:/bitnami'
+      - 'kafka:/var/lib/docker/volumes/kafka'
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=172.40.0.5:2181
@@ -29,6 +29,47 @@ services:
       - KAFKA_LISTENERS=PLAINTEXT://:9092
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://172.40.0.6:9092
   
+
+  kafka-rest:
+    image: nodefluent/kafka-rest
+    networks:
+      default:
+        ipv4_address: 172.40.0.7
+    ports:
+      - 8082:8082
+    environment:
+      # DEBUG: "*"
+      KAFKA_REST_DEBUG: "all"
+      KAFKA_REST_HTTP_PORT: 8082
+      KAFKA_REST_CONSUMER_METADATA_BROKER_LIST: "172.40.0.6:9092"
+      KAFKA_REST_PRODUCER_METADATA_BROKER_LIST: "172.40.0.6:9092"
+
+  kafka-rest-ui:
+    image: nodefluent/kafka-rest-ui
+    networks:
+      default:
+        ipv4_address: 172.40.0.8
+    ports:
+      - 8000:8000
+    environment:
+      DEBUG: "*"
+      REACT_APP_KAFKA_REST_URL: "http://172.40.0.7:8082/"
+      REACT_APP_TIMEOUT: "3000"
+      PROXY: "yes"
+  
+
+  # yahoo-manager:
+  #   image: 'sheepkiller/kafka-manager'
+  #   networks:
+  #     default:
+  #       ipv4_address: 172.40.0.7
+  #   ports:
+  #     - '9000:9000'
+  #   environment:
+  #     - ZK_HOSTS='172.40.0.5:2181'
+  #     - APPLICATION_SECRET=letmein
+
+# docker run -it --rm  -p 9000:9000 -e ZK_HOSTS="your-zk.domain:2181" -e APPLICATION_SECRET=letmein sheepkiller/kafka-manager
 
 
   # kafka1:
@@ -54,17 +95,14 @@ services:
   #     - KAFKA_LISTENERS=PLAINTEXT://:9092
   #     - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://172.40.0.8:9092
 
-
 networks:
-  demo-net:
-    ipam:
-      config:
-        - subnet: 172.40.0.5/16
-
+  default:
+    external:
+      name: kafka_python_api_demo-net
 
 
 volumes:
   zookeeper_data:
     driver: local
-  kafka_data:
-    driver: local
+  kafka:
+    external: true

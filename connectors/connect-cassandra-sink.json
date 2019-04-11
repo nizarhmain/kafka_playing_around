@@ -1,0 +1,15 @@
+{
+    "name": "cassandra-sink-orders",
+    "config": {
+        "connector.class": "com.datamountaineer.streamreactor.connect.cassandra.sink.CassandraSinkConnector",
+        "tasks.max": "1",
+        "topics": "orders-topic",
+        "connect.cassandra.port": 9042,
+        "connect.cassandra.contact.points": "172.40.0.9",
+        "connect.cassandra.key.space": "demo",
+        "connect.cassandra.username": "cassandra",
+        "connect.cassandra.password": "cassandra",
+        "connect.cassandra.kcql": "INSERT INTO orders SELECT * FROM orders-topic",
+        "connect.progress.enabled": true
+    }
+}

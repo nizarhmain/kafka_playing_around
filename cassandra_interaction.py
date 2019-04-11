@@ -50,8 +50,17 @@ session.execute(
 
 
 
-# CREATE KEYSPACE cycling
+# CREATE KEYSPACE blog
 #     WITH REPLICATION = { 
 #      'class' : 'SimpleStrategy', 
 #      'replication_factor' : 1 
 #     };
+
+
+# CREATE TABLE IF NOT EXISTS "kc_events" (
+#     event_id1 TEXT, 
+#     event_id2 TEXT, 
+#     event_ts TIMEUUID, 
+#     event_data1 TEXT, 
+#     event_data2 TEXT, 
+# PRIMARY KEY ((event_id1, event_id2)));
