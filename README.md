@@ -59,6 +59,10 @@ and check on the state of the running containers with
 docker ps
 ```
 
+and finally you can open a new terminal, and run the following command to open a cqlsh session with the cassandra node
+```
+docker exec -it composers_cassandra1_1 cqlsh
+```
 
 # END of ENTREPRISE BUSINESS ANALYTICS PART
 
