@@ -1,4 +1,67 @@
-you must need to do create an external volume called "cassandra"
+you must two external volumes called "cassandra" and "cassandra2_data"
+
+# ENTREPRISE BUSINESS ANALYTICS PART
+
+```
+docker volume create cassandra
+docker volume create cassandra2_data
+
+```
+
+
+Then you can have to specify where you want the cassandra tables to be stored, You can do the following by change this line to in the composers/cassandra-compose.yml
+
+```
+cassandra:/var/lib/docker/volumes/cassandra
+
+cassandra2_data:/var/lib/docker/volumes/cassandra
+
+# INSTEAD SPECIFY A PATH YOU WANT
+
+cassandra:C:\MY_WINDOWS_PATH
+
+cassandra2_data:C:\MY_WINDOWS_PATH
+
+```
+
+Finally the base image boots up with 4 GB of RAMS for each cassandra container (8GB of RAM total), if you have limited RAM, just comment out in the cassandra-compose.yml file 
+```
+services:
+  cassandra1:
+    image: 'cassandra'
+
+    volumes:
+      - cassandra:/var/lib/docker/volumes/cassandra
+          
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra1
+  
+  # cassandra2:
+  #   image: 'cassandra'
+  #   volumes:
+  #     - 'cassandra2_data:/var/lib/docker/volumes/cassandra'
+    
+  #   environment:
+  #     - CASSANDRA_BROADCAST_ADDRESS=cassandra2
+  #     - CASSANDRA_SEEDS=cassandra1
+
+```
+
+Now you can start the cassandra containers
+
+```
+cd composers
+docker-compose --file cassandra-compose.yml up
+```
+
+and check on the state of the running containers with 
+```
+docker ps
+```
+
+
+# END of ENTREPRISE BUSINESS ANALYTICS PART
+
 
 ```
 docker volume create my-vol

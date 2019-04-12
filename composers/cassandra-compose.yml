@@ -1,63 +1,29 @@
-version: '2'
-
-networks:
-  default:
-    external:
-      name: kafka_python_api_demo-net
+version: '3'
 
 services:
   cassandra1:
     image: 'cassandra'
-    
-    networks:
-      default:
-        ipv4_address: 172.40.0.9
 
     volumes:
       - cassandra:/var/lib/docker/volumes/cassandra
           
     environment:
-      - CASSANDRA_BROADCAST_ADDRESS=172.40.0.9
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra1
+  
+  cassandra2:
+    image: 'cassandra'
+    volumes:
+      - 'cassandra2_data:/var/lib/docker/volumes/cassandra'
     
-  # kafka-cassandra:
-  #   image: 'datamountaineer/kafka-connect-cassandra'
-    
-  #   networks:
-  #     default:
-  #       ipv4_address: 172.40.0.10
-
-  #   environment:
-  #     - CONNECT_BOOTSTRAP_SERVERS=http://172.40.0.6:9092
-  #     - CONNECT_GROUP_ID="quickstart"
-  #     - CONNECT_CONFIG_STORAGE_TOPIC="quickstart-config"
-  #     - CONNECT_OFFSET_STORAGE_TOPIC="quickstart-offsets"
-  #     - CONNECT_STATUS_STORAGE_TOPIC="quickstart-status"
-  #     - CONNECT_KEY_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-  #     - CONNECT_VALUE_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-  #     - CONNECT_INTERNAL_KEY_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-  #     - CONNECT_INTERNAL_VALUE_CONVERTER="org.apache.kafka.connect.json.JsonConverter"
-  #     - CONNECT_REST_ADVERTISED_HOST_NAME="localhost"
-  #     - CONNECT_PLUGIN_PATH=/usr/share/java
-
-
-  # cassandra2:
-  #   image: 'cassandra'
-    
-  #   networks:
-  #     default:
-  #       ipv4_address: 172.40.0.10
-    
-  #   volumes:
-  #     - 'cassandra2_data:/var/lib/docker/volumes/cassandra'
-    
-  #   environment:
-  #     - CASSANDRA_BROADCAST_ADDRESS=172.40.0.10
-  #     - CASSANDRA_SEEDS=172.40.0.9
-
+    environment:
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra2
+      - CASSANDRA_SEEDS=cassandra1
 
 
 volumes:
   cassandra:
+    external: true
+  cassandra2_data:
     external: true
   
 
